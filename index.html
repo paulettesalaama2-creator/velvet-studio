@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelvetStudio - Watch Anime Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Anton&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0b0c10;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .brand-cursive {
+            font-family: 'Pacifico', cursive;
+            color: #ffffff;
+        }
+
+        .display-font {
+            font-family: 'Anton', sans-serif;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* --- CLEAN INTRO ANIMATION --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0b0c10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: introShrink 2.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        .intro-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: contentScale 2s ease-in-out forwards;
+        }
+
+        .intro-logo-svg {
+            width: 110px;
+            height: 110px;
+            margin-bottom: 15px;
+        }
+
+        .intro-title {
+            font-size: 4.2rem;
+            line-height: 1.1;
+        }
+
+        .intro-sub {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        @keyframes introShrink {
+            0% { transform: scale(1.4); opacity: 1; }
+            75% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.2); opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes contentScale {
+            0% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- HEADER NAVIGATION --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 40px;
+            background-color: #121318;
+            border-bottom: 1px solid #1f222e;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .header-logo-svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            list-style: none;
+            margin-left: 25px;
+        }
+
+        .nav-links a {
+            color: #a0a5b5;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #ff2a2a;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        .lang-switch-bar {
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            border-radius: 20px;
+            display: flex;
+            padding: 3px;
+        }
+
+        .lang-option {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            color: #777;
+            transition: all 0.2s;
+        }
+
+        .lang-option.active {
+            background-color: #ff2a2a;
+            color: #fff;
+        }
+
+        .search-box {
+            position: relative;
+            width: 220px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 35px 8px 14px;
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            border-radius: 20px;
+            color: #fff;
+            outline: none;
+            font-size: 0.85rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .menu-btn {
+            font-size: 1.2rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .menu-btn:hover {
+            color: #ff2a2a;
+        }
+
+        .genre-dropdown {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background-color: #121318;
+            border: 1px solid #282b3a;
+            border-radius: 10px;
+            width: 280px;
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 1100;
+        }
+
+        .genre-dropdown.show {
+            display: flex;
+        }
+
+        .genre-dropdown h4 {
+            font-size: 0.85rem;
+            color: #ff2a2a;
+            text-transform: uppercase;
+            border-bottom: 1px solid #282b3a;
+            padding-bottom: 6px;
+        }
+
+        .genre-tags-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .genre-chip-menu {
+            background-color: #1a1c26;
+            color: #bbb;
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .genre-chip-menu:hover {
+            background-color: #ff2a2a;
+            color: #fff;
+        }
+
+        /* --- HERO BANNER --- */
+        .hero-banner {
+            position: relative;
+            height: 440px;
+            background: linear-gradient(to right, #0b0c10 40%, #12141d);
+            padding: 0 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid #1f222e;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .hero-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background-color: #1e212b;
+            color: #ccc;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tag-red {
+            background-color: #ff2a2a;
+            color: #fff;
+        }
+
+        .hero-desc {
+            max-width: 650px;
+            color: #a0a5b5;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 26px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #ff2a2a;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #d91e1e;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #1a1c26;
+            color: #fff;
+            border: 1px solid #282b3a;
+        }
+
+        .btn-secondary:hover {
+            background-color: #242736;
+            transform: translateY(-2px);
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .section-container {
+            padding: 35px 50px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff2a2a;
+            padding-left: 12px;
+        }
+
+        .anime-grid-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 20px;
+            margin-bottom: 45px;
+        }
+
+        .anime-card {
+            background-color: #121318;
+            border: 1px solid #1f222e;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-6px);
+            border-color: #ff2a2a;
+        }
+
+        /* NO-PICTURE VECTOR POSTER BOX */
+        .poster-box-graphic {
+            position: relative;
+            height: 240px;
+            background: radial-gradient(circle, #1a1c26 0%, #0d0f14 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #1f222e;
+        }
+
+        .poster-icon-svg {
+            width: 50px;
+            height: 50px;
+            color: #ff2a2a;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .poster-graphic-title {
+            font-size: 1rem;
+            color: #888;
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .year-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff2a2a;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .card-info {
+            padding: 12px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 3-COLUMN LIST GRID (RECOMMENDATIONS) */
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .list-item {
+            display: flex;
+            background-color: #121318;
+            border: 1px solid #1f222e;
+            border-radius: 8px;
+            padding: 12px;
+            gap: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .list-item:hover {
+            background-color: #1a1c26;
+            border-color: #ff2a2a;
+        }
+
+        .list-thumb-graphic {
+            width: 70px;
+            height: 95px;
+            border-radius: 6px;
+            background: #1a1c26;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff2a2a;
+            flex-shrink: 0;
+            border: 1px solid #282b3a;
+        }
+
+        .list-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .list-details h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .list-details p {
+            color: #777;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .watch-link {
+            color: #ff2a2a;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- VIEW PAGES (DETAILS / WATCH) --- */
+        .page-view {
+            display: none;
+            padding: 30px 50px;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        .breadcrumb {
+            color: #777;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb span {
+            color: #fff;
+        }
+
+        /* DETAILS PAGE LAYOUT */
+        .details-header-card {
+            background-color: #11131a;
+            border: 1px solid #1e212d;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .details-poster-graphic {
+            width: 220px;
+            height: 300px;
+            border-radius: 10px;
+            background: radial-gradient(circle, #1a1c26 0%, #0d0f14 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #282b3a;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .rating-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background-color: rgba(18, 19, 24, 0.85);
+            color: #00ffd2;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(0, 255, 210, 0.3);
+        }
+
+        .details-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .details-title {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .details-sub {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+        }
+
+        .details-badges {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            background-color: #1a1c26;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-pill.red {
+            background-color: #ff2a2a;
+            color: #fff;
+        }
+
+        .details-synopsis {
+            color: #a0a5b5;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            max-width: 850px;
+        }
+
+        .details-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* DETAILS GRID TABLE */
+        .details-grid-section {
+            background-color: #11131a;
+            border: 1px solid #1e212d;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .details-grid-section h3 {
+            color: #ff2a2a;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grid-info-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-cell label {
+            color: #666e80;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-cell span {
+            color: #e0e2e8;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* GENRES SECTION */
+        .genres-block h4 {
+            color: #666e80;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .genre-pills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .genre-pill {
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            color: #ffffff;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .genre-pill:hover {
+            background-color: #ff2a2a;
+            border-color: #ff2a2a;
+        }
+
+        /* --- WATCH EPISODE PAGE LAYOUT --- */
+        .watch-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .video-main-column {
+            flex-grow: 1;
+        }
+
+        .video-player-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background-color: #000000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-player-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .player-controls-bar {
+            background-color: #11131a;
+            border: 1px solid #1e212d;
+            border-top: none;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ctrl-btn {
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            color: #ccc;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .ctrl-btn:hover, .ctrl-btn.active {
+            background-color: #262938;
+            color: #fff;
+            border-color: #ff2a2a;
+        }
+
+        .ctrl-btn.active-check {
+            border-color: #ff2a2a;
+            color: #ff2a2a;
+        }
+
+        /* EPISODE SIDEBAR */
+        .episodes-sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background-color: #11131a;
+            border: 1px solid #1e212d;
+            border-radius: 8px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .sub-dub-toggle {
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #ccc;
+        }
+
+        .ep-search {
+            position: relative;
+        }
+
+        .ep-search input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            background-color: #1a1c26;
+            border: 1px solid #282b3a;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        .ep-search i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .ep-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .ep-item {
+            background-color: #181a24;
+            border: 1px solid #222533;
+            border-radius: 6px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ep-item:hover {
+            border-color: #ff2a2a;
+            background-color: #1e212d;
+        }
+
+        .ep-item.active {
+            border-color: #ff2a2a;
+            background-color: #1e212d;
+        }
+
+        .ep-num {
+            background-color: #252836;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .ep-item.active .ep-num {
+            background-color: #ff2a2a;
+        }
+
+        .ep-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .ep-item.active .ep-name {
+            color: #ff2a2a;
+        }
+
+        @media (max-width: 992px) {
+            .list-grid { grid-template-columns: 1fr; }
+            .watch-container { flex-direction: column; }
+            .episodes-sidebar { width: 100%; }
+            .details-header-card { flex-direction: column; align-items: center; text-align: center; }
+            .grid-info-table { grid-template-columns: repeat(2, 1fr); }
+            header { padding: 12px 20px; }
+            .section-container, .page-view { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CLEAN INTRO ANIMATION -->
+    <div id="intro-overlay">
+        <div class="intro-content">
+            <svg class="intro-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 25 C 30 25, 20 45, 35 60 C 45 70, 60 65, 50 50 C 45 42, 38 48, 42 54 C 44 57, 50 56, 48 52" stroke="#ff2a2a" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 20 40 C 10 65, 35 90, 65 85 C 85 80, 95 55, 70 30 C 50 10, 25 20, 15 35" stroke="#ff2a2a" stroke-width="5" stroke-linecap="round"/>
+                <polygon points="50,30 53,37 60,37 55,41 57,48 50,44 43,48 45,41 40,37 47,37" fill="#ff2a2a" />
+            </svg>
+            <div class="intro-title brand-cursive">VelvetStudio</div>
+            <div class="intro-sub">STREAMING PLATFORM</div>
+        </div>
+    </div>
+
+    <!-- HEADER NAVIGATION -->
+    <header>
+        <div class="brand-container" onclick="showHome()">
+            <svg class="header-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 50 25 C 30 25, 20 45, 35 60 C 45 70, 60 65, 50 50 C 45 42, 38 48, 42 54 C 44 57, 50 56, 48 52" stroke="#ff2a2a" stroke-width="7" stroke-linecap="round"/>
+                <path d="M 20 40 C 10 65, 35 90, 65 85 C 85 80, 95 55, 70 30 C 50 10, 25 20, 15 35" stroke="#ff2a2a" stroke-width="6" stroke-linecap="round"/>
+                <polygon points="50,30 53,37 60,37 55,41 57,48 50,44 43,48 45,41 40,37 47,37" fill="#ff2a2a" />
+            </svg>
+            <div class="logo-text brand-cursive">VelvetStudio</div>
+
+            <ul class="nav-links">
+                <li><a href="#" class="active" onclick="showHome()">Home</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">Series</a></li>
+                <li><a href="#">New</a></li>
+            </ul>
+        </div>
+
+        <div class="header-right">
+            <div class="lang-switch-bar">
+                <div class="lang-option active" id="lang-en" onclick="setLanguage('en')">EN</div>
+                <div class="lang-option" id="lang-jp" onclick="setLanguage('jp')">JP</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search anime...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+
+            <i class="fa-solid fa-bars menu-btn" onclick="toggleGenreMenu()"></i>
+
+            <div class="genre-dropdown" id="genre-menu">
+                <h4>Anime Categories</h4>
+                <div class="genre-tags-menu">
+                    <span class="genre-chip-menu">Psychological</span>
+                    <span class="genre-chip-menu">Comedy</span>
+                    <span class="genre-chip-menu">Action</span>
+                    <span class="genre-chip-menu">Fantasy</span>
+                    <span class="genre-chip-menu">Drama</span>
+                    <span class="genre-chip-menu">Supernatural</span>
+                    <span class="genre-chip-menu">Horror</span>
+                    <span class="genre-chip-menu">Adventure</span>
+                    <span class="genre-chip-menu">Romance</span>
+                    <span class="genre-chip-menu">Slice of Life</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME PAGE VIEW -->
+    <div id="page-home" class="page-view active" style="padding:0;">
+        <div class="hero-banner">
+            <h1 class="hero-title display-font" id="hero-title-text">Mind Game</h1>
+            <div class="hero-tags">
+                <span class="tag tag-red">13+</span>
+                <span class="tag">PSYCHOLOGICAL</span>
+                <span class="tag">COMEDY</span>
+                <span class="tag">ACTION</span>
+                <span class="tag">FANTASY</span>
+                <span class="tag">DRAMA</span>
+                <span class="tag">SUPERNATURAL</span>
+                <span class="tag">HORROR</span>
+            </div>
+            <p class="hero-desc">mind game is place where people can do whatever they want to without any suspicion but why it is because there is only one person who that power.</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="openWatchPage('mind-game', 1)"><i class="fa-solid fa-play"></i> Watch Episode 1</button>
+                <button class="btn btn-secondary" onclick="openDetailsPage('mind-game')"><i class="fa-solid fa-circle-info"></i> Details</button>
+            </div>
+        </div>
+
+        <div class="section-container">
+            <!-- MOST POPULAR SECTION RESTORED -->
+            <h2 class="section-title display-font">Most Popular</h2>
+            <div class="anime-grid-row" id="popular-grid">
+                <!-- Dynamic cards -->
+            </div>
+
+            <!-- RECOMMENDATIONS SECTION RESTORED -->
+            <h2 class="section-title display-font">Recommendations</h2>
+            <div class="list-grid" id="recommendations-grid">
+                <!-- Dynamic list items -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILS PAGE VIEW -->
+    <div id="page-details" class="page-view">
+        <div class="breadcrumb">Home / TV / <span id="det-bc-title">Mind Game</span></div>
+
+        <div class="details-header-card">
+            <div class="details-poster-graphic">
+                <svg class="poster-icon-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 50 25 C 30 25, 20 45, 35 60 C 45 70, 60 65, 50 50 C 45 42, 38 48, 42 54 C 44 57, 50 56, 48 52" stroke="#ff2a2a" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M 20 40 C 10 65, 35 90, 65 85 C 85 80, 95 55, 70 30 C 50 10, 25 20, 15 35" stroke="#ff2a2a" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+                <div class="poster-graphic-title display-font" id="det-graphic-title">VelvetStudio</div>
+                <div class="rating-badge"><i class="fa-solid fa-star"></i> <span id="det-rating-num">8.18</span></div>
+            </div>
+            <div class="details-info">
+                <h1 id="det-title" class="details-title display-font">Title</h1>
+                <div id="det-sub" class="details-sub">Japanese Title</div>
+
+                <div class="details-badges">
+                    <span class="badge-pill red">HD</span>
+                    <span class="badge-pill"><i class="fa-solid fa-closed-captioning"></i> <span id="det-sub-badge">12</span></span>
+                    <span id="det-dub-badge-wrapper" class="badge-pill"><i class="fa-solid fa-microphone"></i> <span id="det-dub-badge">12</span></span>
+                    <span id="det-ep-badge" class="badge-pill">12 eps</span>
+                    <span class="badge-pill">TV</span>
+                    <span id="det-status-badge" class="badge-pill">Currently Airing</span>
+                </div>
+
+                <p id="det-synopsis" class="details-synopsis">Synopsis goes here...</p>
+
+                <div class="details-actions">
+                    <button class="btn btn-primary" id="det-watch-btn"><i class="fa-solid fa-play"></i> Watch Now</button>
+                    <button class="btn btn-secondary"><i class="fa-regular fa-bookmark"></i> Add Bookmark</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-grid-section">
+            <h3>Details</h3>
+            <div class="grid-info-table">
+                <div class="info-cell"><label>Other Name</label><span id="det-other-name">-</span></div>
+                <div class="info-cell"><label>Synonyms</label><span id="det-synonyms">-</span></div>
+                <div class="info-cell"><label>Type</label><span>TV</span></div>
+                <div class="info-cell"><label>Aired</label><span id="det-aired">2028-10-04</span></div>
+                <div class="info-cell"><label>Premiered</label><span id="det-premiered">Fall 2028</span></div>
+                <div class="info-cell"><label>Duration</label><span>24m</span></div>
+                <div class="info-cell"><label>Status</label><span id="det-status">Currently Airing</span></div>
+                <div class="info-cell"><label>Rating</label><span>13+</span></div>
+                <div class="info-cell"><label>MAL Score</label><span id="det-mal">8.18</span></div>
+                <div class="info-cell"><label>Episodes</label><span id="det-ep-count">12</span></div>
+                <div class="info-cell"><label>Studios</label><span id="det-studios">Velvet Studio</span></div>
+            </div>
+
+            <div class="genres-block">
+                <h4>GENRES</h4>
+                <div class="genre-pills-row" id="det-genres-row">
+                    <!-- Dynamic genre pills -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WATCH PAGE VIEW -->
+    <div id="page-watch" class="page-view">
+        <div class="breadcrumb">Home / TV / <span id="watch-bc-title">Mind Game</span> / Episode <span id="watch-bc-ep">1</span></div>
+
+        <div class="watch-container">
+            <div class="video-main-column">
+                <div class="video-player-box">
+                    <video id="main-video-player" controls poster="https://via.placeholder.com/1280x720/11131a/ff2a2a?text=VelvetStudio+Player">
+                        <source id="main-video-src" src="my-video.mp4" type="video/mp4">
+                        Your browser does not support HTML video.
+                    </video>
+                </div>
+
+                <div class="player-controls-bar">
+                    <div class="ctrl-group">
+                        <button class="ctrl-btn active-check"><i class="fa-solid fa-check"></i> Auto Play</button>
+                        <button class="ctrl-btn active-check"><i class="fa-solid fa-check"></i> Auto Next</button>
+                        <button class="ctrl-btn active-check"><i class="fa-solid fa-check"></i> Auto Skip</button>
+                    </div>
+                    <div class="ctrl-group">
+                        <button class="ctrl-btn"><i class="fa-regular fa-clone"></i> Mini Player</button>
+                        <button class="ctrl-btn"><i class="fa-regular fa-lightbulb"></i> Light</button>
+                        <button class="ctrl-btn"><i class="fa-regular fa-bookmark"></i> Add Bookmark</button>
+                        <button class="ctrl-btn" onclick="prevEpisode()"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+                        <button class="ctrl-btn" onclick="nextEpisode()">Next <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="episodes-sidebar">
+                <div class="sidebar-header">
+                    <span class="sidebar-title">Episodes</span>
+                    <span class="sub-dub-toggle" id="sidebar-audio-mode">Sub & Dub</span>
+                </div>
+
+                <div class="ep-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Find ep...">
+                </div>
+
+                <div class="ep-list" id="sidebar-ep-list">
+                    <!-- Dynamic episode list items -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const animeData = {
+            "mind-game": {
+                id: "mind-game",
+                titleEn: "Mind Game",
+                titleJp: "Mando Geemu",
+                rating: "8.85",
+                genres: ["Psychological", "Comedy", "Action", "Fantasy", "Drama", "Supernatural", "Horror"],
+                desc: "mind game is place where people can do whatever they want to without any suspicion but why it is because there is only one person who that power.",
+                episodes: 12,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2028-10-04",
+                premiered: "Fall 2028",
+                status: "Currently Airing",
+                studios: "Velvet Studio",
+                popular: true,
+                recommended: false
+            },
+            "secret-of-hunter": {
+                id: "secret-of-hunter",
+                titleEn: "The Secret of Hunter",
+                titleJp: "Hantaa no Himitsu",
+                rating: "8.45",
+                genres: ["Action", "Adventure", "Fantasy", "Mystery"],
+                desc: "Follow the dangerous journey of a rogue hunter uncovering forgotten ancient monsters and political conspiracies in a fantasy realm.",
+                episodes: 12,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2028-04-12",
+                premiered: "Spring 2028",
+                status: "Finished Airing",
+                studios: "Velvet Studio",
+                popular: true,
+                recommended: false
+            },
+            "forbidden-spell": {
+                id: "forbidden-spell",
+                titleEn: "Forbidden Spell",
+                titleJp: "Kinjirareta Jumon",
+                rating: "7.92",
+                genres: ["Supernatural", "Action", "Fantasy"],
+                desc: "When a young apprentice accidentally unlocks a sealed taboo incantation, magical academies across the realm initiate a relentless hunt.",
+                episodes: 12,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2029-01-08",
+                premiered: "Winter 2029",
+                status: "Finished Airing",
+                studios: "Velvet Studio",
+                popular: true,
+                recommended: false
+            },
+            "love-with-girl": {
+                id: "love-with-girl",
+                titleEn: "I Fell in Love with a Girl Even Though I'm Gay",
+                titleJp: "Gei dakedo Shoujo ni Koi shita",
+                rating: "8.65",
+                genres: ["Romance", "Comedy", "Slice of Life", "Drama"],
+                desc: "A heart-warming and chaotic romantic comedy exploring self-discovery, identity, and unexpected feelings in modern Tokyo.",
+                episodes: 24,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2035-07-02",
+                premiered: "Summer 2035",
+                status: "Currently Airing",
+                studios: "Velvet Studio",
+                popular: true,
+                recommended: false
+            },
+            "scarlet-eye": {
+                id: "scarlet-eye",
+                titleEn: "Scarlet Eye",
+                titleJp: "Hiiro no Hitomi",
+                rating: "8.30",
+                genres: ["Action", "Supernatural", "Fantasy"],
+                desc: "Uncover dark secrets behind a mystical cursed ocular power in a dangerous fantasy world.",
+                episodes: 12,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2028-05-14",
+                premiered: "Spring 2028",
+                status: "Finished Airing",
+                studios: "Velvet Studio",
+                popular: false,
+                recommended: true
+            },
+            "lost-prince": {
+                id: "lost-prince",
+                titleEn: "The Lost Prince",
+                titleJp: "Ushinawareta Ooji",
+                rating: "8.10",
+                genres: ["Drama", "Action", "Fantasy"],
+                desc: "An exiled heir fights back to reclaim his throne against dark political forces and betrayal. (Episodes are not translated; subtitles required).",
+                episodes: 6,
+                audio: "Subbed Only",
+                hasDub: false,
+                aired: "2027-11-20",
+                premiered: "Fall 2027",
+                status: "Finished Airing",
+                studios: "Velvet Studio",
+                popular: false,
+                recommended: true
+            },
+            "vengeance": {
+                id: "vengeance",
+                titleEn: "Vengeance",
+                titleJp: "Fukushuu",
+                rating: "8.50",
+                genres: ["Action", "Thriller", "Psychological"],
+                desc: "A relentless pursuit of retribution across a cyberpunk underworld where no one can be trusted.",
+                episodes: 12,
+                audio: "Sub & Dub",
+                hasDub: true,
+                aired: "2029-03-10",
+                premiered: "Winter 2029",
+                status: "Finished Airing",
+                studios: "Velvet Studio",
+                popular: false,
+                recommended: true
+            }
+        };
+
+        let currentAnimeId = "mind-game";
+        let currentEpisodeNum = 1;
+        let currentLang = 'en';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSections();
+        });
+
+        function toggleGenreMenu() {
+            document.getElementById('genre-menu').classList.toggle('show');
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.getElementById('lang-jp').classList.toggle('active', lang === 'jp');
+            
+            const current = animeData[currentAnimeId];
+            document.getElementById('hero-title-text').innerText = lang === 'en' ? current.titleEn : current.titleJp;
+            renderSections();
+        }
+
+        function renderSections() {
+            const popGrid = document.getElementById('popular-grid');
+            const recGrid = document.getElementById('recommendations-grid');
+            
+            popGrid.innerHTML = '';
+            recGrid.innerHTML = '';
+
+            Object.values(animeData).forEach(item => {
+                const title = currentLang === 'en' ? item.titleEn : item.titleJp;
+                
+                if (item.popular) {
+                    const card = document.createElement('div');
+                    card.className = 'anime-card';
+                    card.onclick = () => openDetailsPage(item.id);
+                    card.innerHTML = `
+                        <div class="poster-box-graphic">
+                            <svg class="poster-icon-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 50 25 C 30 25, 20 45, 35 60 C 45 70, 60 65, 50 50 C 45 42, 38 48, 42 54 C 44 57, 50 56, 48 52" stroke="#ff2a2a" stroke-width="6" stroke-linecap="round"/>
+                                <path d="M 20 40 C 10 65, 35 90, 65 85 C 85 80, 95 55, 70 30 C 50 10, 25 20, 15 35" stroke="#ff2a2a" stroke-width="5" stroke-linecap="round"/>
+                            </svg>
+                            <div class="poster-graphic-title display-font">${title}</div>
+                            <span class="year-badge">${item.rating} ★</span>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title display-font">${title}</div>
+                        </div>
+                    `;
+                    popGrid.appendChild(card);
+                }
+
+                if (item.recommended) {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'list-item';
+                    itemEl.onclick = () => openDetailsPage(item.id);
+                    itemEl.innerHTML = `
+                        <div class="list-thumb-graphic">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div class="list-details">
+                            <h4 class="display-font">${title}</h4>
+                            <p>${item.desc}</p>
+                            <span class="watch-link">Watch Now &rarr;</span>
+                        </div>
+                    `;
+                    recGrid.appendChild(itemEl);
+                }
+            });
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showHome() {
+            switchPage('page-home');
+        }
+
+        function openDetailsPage(animeId) {
+            currentAnimeId = animeId;
+            const anime = animeData[animeId];
+            const title = currentLang === 'en' ? anime.titleEn : anime.titleJp;
+
+            document.getElementById('det-bc-title').innerText = title;
+            document.getElementById('det-title').innerText = title;
+            document.getElementById('det-sub').innerText = anime.titleJp;
+            document.getElementById('det-graphic-title').innerText = title;
+            document.getElementById('det-rating-num').innerText = anime.rating;
+            document.getElementById('det-synopsis').innerText = anime.desc;
+            document.getElementById('det-ep-badge').innerText = `${anime.episodes} eps`;
+            document.getElementById('det-status-badge').innerText = anime.status;
+            document.getElementById('det-sub-badge').innerText = anime.episodes;
+
+            const dubWrapper = document.getElementById('det-dub-badge-wrapper');
+            if (anime.hasDub) {
+                dubWrapper.style.display = 'flex';
+                document.getElementById('det-dub-badge').innerText = anime.episodes;
+            } else {
+                dubWrapper.style.display = 'none';
+            }
+
+            document.getElementById('det-other-name').innerText = anime.titleJp;
+            document.getElementById('det-synonyms').innerText = anime.titleEn;
+            document.getElementById('det-aired').innerText = anime.aired;
+            document.getElementById('det-premiered').innerText = anime.premiered;
+            document.getElementById('det-status').innerText = anime.status;
+            document.getElementById('det-mal').innerText = anime.rating;
+            document.getElementById('det-ep-count').innerText = anime.episodes;
+            document.getElementById('det-studios').innerText = anime.studios;
+
+            const genresRow = document.getElementById('det-genres-row');
+            genresRow.innerHTML = '';
+            anime.genres.forEach(genre => {
+                const pill = document.createElement('div');
+                pill.className = 'genre-pill';
+                pill.innerText = genre;
+                genresRow.appendChild(pill);
+            });
+
+            document.getElementById('det-watch-btn').onclick = () => openWatchPage(animeId, 1);
+
+            switchPage('page-details');
+        }
+
+        function openWatchPage(animeId, epNum) {
+            currentAnimeId = animeId;
+            currentEpisodeNum = epNum;
+            const anime = animeData[animeId];
+            const title = currentLang === 'en' ? anime.titleEn : anime.titleJp;
+
+            document.getElementById('watch-bc-title').innerText = title;
+            document.getElementById('watch-bc-ep').innerText = epNum;
+            document.getElementById('sidebar-audio-mode').innerText = anime.audio;
+
+            const sidebarList = document.getElementById('sidebar-ep-list');
+            sidebarList.innerHTML = '';
+
+            for (let i = 1; i <= anime.episodes; i++) {
+                const epItem = document.createElement('div');
+                epItem.className = `ep-item ${i === epNum ? 'active' : ''}`;
+                epItem.onclick = () => selectEpisode(i);
+                epItem.innerHTML = `
+                    <div class="ep-num">${i}</div>
+                    <div class="ep-name">Episode ${i}</div>
+                `;
+                sidebarList.appendChild(epItem);
+            }
+
+            const player = document.getElementById('main-video-player');
+            player.play().catch(() => {});
+
+            switchPage('page-watch');
+        }
+
+        function selectEpisode(epNum) {
+            currentEpisodeNum = epNum;
+            document.getElementById('watch-bc-ep').innerText = epNum;
+            
+            document.querySelectorAll('.ep-item').forEach((item, index) => {
+                item.classList.toggle('active', (index + 1) === epNum);
+            });
+
+            const player = document.getElementById('main-video-player');
+            player.currentTime = 0;
+            player.play().catch(() => {});
+        }
+
+        function nextEpisode() {
+            const anime = animeData[currentAnimeId];
+            if (currentEpisodeNum < anime.episodes) {
+                selectEpisode(currentEpisodeNum + 1);
+            }
+        }
+
+        function prevEpisode() {
+            if (currentEpisodeNum > 1) {
+                selectEpisode(currentEpisodeNum - 1);
+            }
+        }
+    </script>
+</body>
+</html>
